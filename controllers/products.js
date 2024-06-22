@@ -50,7 +50,8 @@ const getAllProducts = async (req, res) => {
     // const {featured, company, name, sort} = req.query;
     // const {featured, company, name, sort, fields} = req.query;
        const {featured, company, name, sort, fields, numericFilters} = req.query;
-    
+       
+    console.log(req.query);
     const queryObject = {}
 
     if(featured)  // ----doubt2 => if the query has the condn of featured=false, then it wont enter this if body, and hence no featured field in the queryObject will be initialized with any value(false, in this case).....so won't it fail incase query has featured=false???
@@ -67,6 +68,7 @@ const getAllProducts = async (req, res) => {
     if(name)
     {
         queryObject.name = {$regex:name, $options:'i'}; //options" 'i' ->case insensitive
+        // $regex is a query parameter in mongoose which means that even is a part/substring of the entire name is provided in the query, even then it will be able to search related names; instead of a simple direct word search
     }
 
     if(numericFilters)
@@ -74,7 +76,7 @@ const getAllProducts = async (req, res) => {
         const operatorMap = {
             '>': '$gt',
             '>=': '$gte',
-            '=': '$e',
+            '=': '$eq',
             '<': '$lt',
             '<=': '$lte'
         }
@@ -131,8 +133,10 @@ const getAllProducts = async (req, res) => {
     result = result.skip(skip).limit(limit);
 
     const products = await result;    
-    res.status(200).json({products, nbHits: products.length});
-
+    // res.status(200).json({products, nbHits: products.length});
+    res.set('Content-Type', 'application/json');
+    res.status(200).send(JSON.stringify(products, null, 2)); //to make the output/display more readable
+     //unable to send the nbHits in this stringify waala case thought :( see how u can do it quick!
     // res.status(200).json({msg: `Products route!`});
 }
 

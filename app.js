@@ -34,13 +34,13 @@ const port = process.env.PORT || 3000;
 const start = async () => {
     try{
         await connectDB(process.env.MONGO_URI); //connectDB
-        app.listen(port, console.log(`Server is listening to port ${port}...`));
+        app.listen(port, () => console.log(`Server is listening to port ${port}...`));
     } catch (error) {
         console.log(error);
     }
 }
 
-start()
+start();
 
 //database name in Mongo atlas need not be same as the project name...can be, cannot be
 
